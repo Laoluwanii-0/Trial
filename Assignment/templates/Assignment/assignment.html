@@ -1,0 +1,103 @@
+{% extends 'account-nav.html' %}
+
+{% load static %}
+
+{% block title %}
+Assignment
+{% endblock title %}
+
+{% block body %}
+    
+<!-- COURSE CONCERN -->
+<section id="course-concern" class="course-concern">
+    <div class="container">
+
+        <div class="table-asignment">
+
+            <ul class="nav-tabs" role="tablist">
+                <li class="active"><a href="#assignment" role="tab" data-toggle="tab">Assignments</a></li>
+                {% if user == "staff" %}
+                <li><a href="#addassignment" role="tab" data-toggle="tab">Add Assignment</a></li>
+                {% endif %}
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <!-- ASSIGNMENTS -->
+                <div class="tab-pane fade in active" id="assignment">
+                    <div class="table-wrap">
+                        <!-- TABLE HEAD -->
+                        <div class="table-head">
+                            <div class="latest-reply">Title</div>
+                            <div class="tb-icon">Course</div>
+                            <div class="latest-reply">Date Given</div>
+                            <div class="latest-reply">Deadline</div>
+                            <div class="latest-reply"></div>
+                        </div>
+                        <!-- END / TABLE HEAD -->
+
+                        <!-- TABLE BODY -->
+                        <div class="table-body">
+                            <!-- TABLE ITEM -->
+                            <div class="table-item">
+                                {% for ass in assignments %}
+                                <div class="thead">
+                                    <div class="latest-reply">{{ ass.title }}</div>
+                                    <div class="tb-icon">{{ ass.course }}</div>
+                                    <div class="latest-reply">{{ ass.date_given }}</div>
+                                    <div class="latest-reply">{{ ass.deadline }}</div>
+                                    <div class="latest-reply">
+                                        {% if user == 'staff' %}
+                                        <a class="btn btn-primary" style="color:white" href="{% url 'Assignment:student_assignment_list' ass.id %}">View Assignment</a>
+                                        {% else %}
+                                        <a class="btn btn-primary" style="color:white" href="{% url 'Assignment:submission' ass.id%}">View Assignment</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <!-- END / TABLE ITEM -->
+
+                        </div>
+                        <!-- END / TABLE BODY -->
+                    </div>
+
+                </div>
+                <!-- END / ASSIGNMENTS -->
+
+                {% if user == "staff" %}
+                <!-- ADD ASSIGNMENT -->
+                <div class="tab-pane fade" id="addassignment">
+                    <div class="table-wrap">
+                        <form method="post" action="" class="avatar-acount" style="width:fit-content" enctype="multipart/form-data">
+                        {% csrf_token %}
+                            <h3>New Assignment</h3>
+                            <p>Fill in the form to add assignment</p>
+                            <div class="">
+                                <select class="form-control" name="course_code" required>
+                                    <option value="">Choose Course Code</option>
+                                    {% for course in courses %}
+                                    <option value="{{ course.code }}">{{ course.code }}</option>
+                                    {% endfor %}
+                                </select><br>
+                                <input class="form-control" type="text" name="pdf_title" placeholder="PDF Title" required><br>
+                                <small>Add deadline date<span style="color:red">*</span></small><br>
+                                <input class="form-control" type="date" name="deadline" required><br>
+                                <input class="form-control" type="file" name="file" required><br>
+                            </div>
+                            <div class="input-save">
+                                <input type="submit" value="Submit" class="mc-btn btn-style-1">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- END / ADD ASSIGNMENT -->
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- END / COURSE CONCERN -->
+
+{% endblock body %}
